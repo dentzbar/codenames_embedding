@@ -1,0 +1,32 @@
+@"
+# Virtual Environment
+text_embedding_env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environments
+.env
+.venv
+env/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+*.pkl
+*.pickle
+ranking_*.json
+ranking_*.pkl
+"@ | Out-File -FilePath .gitignore -Encoding UTF8
