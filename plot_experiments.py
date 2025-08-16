@@ -236,9 +236,9 @@ def plot_game_results(csv_path: str, output_dir: str = None) -> None:
         model_games[blue_model] += 1
         
         # Count wins
-        if winner == red_model:
+        if winner == 'red':
             model_wins[red_model] += 1
-        elif winner == blue_model:
+        elif winner == 'blue':
             model_wins[blue_model] += 1
         # Note: draws don't count as wins for either model
         
