@@ -28,7 +28,11 @@ MODELS = {
 }
 
 # Seeds for reproducible experiments
-SEEDS = [42, 123, 456, 789, 1011, 1213, 1415, 1617, 1819, 2021, 2223, 2425, 2627, 2829, 3031, 3233, 3435, 3637, 3839, 4041, 4243, 4445, 4647, 4849, 5051, 5253, 5455, 5657, 5859, 6061, 6263, 6465, 6667, 6869, 7071, 7273, 7475, 7677, 7879, 8081, 8283, 8485, 8687, 8889, 9091, 9293, 9495, 9697, 9899, 10101]
+SEEDS = [42, 123, 456, 789, 1011,
+          1213, 1415, 1617, 1819, 2021,
+            2223, 2425, 2627, 2829, 3031,
+              3233, 3435, 3637, 3839, 4041,
+                4243, 4445, 4647, 4849, 5051]
 print('number of seeds:', len(SEEDS))
 
 class BatchGameExperiments:
@@ -45,7 +49,8 @@ class BatchGameExperiments:
                 red_vectorstore_path=red_path,
                 blue_vectorstore_path=blue_path,
                 seed=seed,
-                verbose=False  # Suppress output for batch processing
+                verbose=False,  # Suppress output for batch processing
+                enable_sleep=False  # Disable sleep for faster batch processing
             )
             
             # Run game in batch mode (no user interaction)
@@ -83,11 +88,11 @@ class BatchGameExperiments:
         combination_results = []
         
         print(f"\n🎯 Running {model1} vs {model2} combination...")
-        print(f"   Red={model1}, Blue={model2} (10 games)")
+        print(f"   Red={model1}, Blue={model2} ({len(SEEDS)} games)")
         
         # First 10 games: model1=red, model2=blue
         for i, seed in enumerate(SEEDS):
-            print(f"   Game {i+1}/10: seed={seed}", end=" ")
+            print(f"   Game {i+1}/{len(SEEDS)}: seed={seed}", end=" ")
             start_time = time.time()
             
             result = self.run_single_game(model1, model2, path1, path2, seed)
@@ -96,11 +101,11 @@ class BatchGameExperiments:
             combination_results.append(result)
             print(f"→ {result['winner']} wins ({result['red_score']}-{result['blue_score']}) [{result['game_duration']:.1f}s]")
         
-        print(f"   Red={model2}, Blue={model1} (10 games)")
+        print(f"   Red={model2}, Blue={model1} ({len(SEEDS)} games)")
         
         # Next 10 games: model2=red, model1=blue (reversed roles)
         for i, seed in enumerate(SEEDS):
-            print(f"   Game {i+11}/20: seed={seed}", end=" ")
+            print(f"   Game {i+1+len(SEEDS)}/{len(SEEDS)}: seed={seed}", end=" ")
             start_time = time.time()
             
             result = self.run_single_game(model2, model1, path2, path1, seed)

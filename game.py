@@ -46,13 +46,15 @@ class AICodenamesGame:
         blue_vectorstore_path: str = "data/wordnet_openai_embedded_store.pkl",
         word_dataset_path: str = "data/simple_word_dataset.pkl",
         seed: int = None,
-        verbose: bool = True
+        verbose: bool = True,
+        enable_sleep: bool = True
     ):
         self.red_vectorstore_path = red_vectorstore_path
         self.blue_vectorstore_path = blue_vectorstore_path
         self.word_dataset_path = word_dataset_path
         self.seed = seed
         self.verbose = verbose
+        self.enable_sleep = enable_sleep
         
         # Game state
         self.red_agent_words: List[str] = []
@@ -280,12 +282,14 @@ class AICodenamesGame:
                 print(f"{ANSI_YELLOW}Turn ends due to wrong guess.{ANSI_RESET}")
                 # Show updated board
                 self.display_board()
-                time.sleep(1)
+                if self.enable_sleep:
+                    time.sleep(1)
                 break
             
             # Show updated board
             self.display_board()
-            time.sleep(1)  # Pause for readability
+            if self.enable_sleep:
+                time.sleep(1)  # Pause for readability
         
         print(f"{ANSI_YELLOW}End of {self.current_team.upper()} team's turn.{ANSI_RESET}")
     
