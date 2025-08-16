@@ -3,7 +3,7 @@
 *Four embedding models walk into a word game... only the smartest one walks out victorious!*
 
 <!-- TODO: Add project banner/logo image here -->
-![Project Banner](assets\agent_AI_image.jpg)
+![Project Banner](./assets/agent_AI_image.jpg)
 
 ---
 
