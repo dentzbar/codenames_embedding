@@ -202,7 +202,7 @@ class SemanticCodewordAnalyzer:
         self.optimal_n = optimal_n
         return best_combo, best_word, ranked, optimal_n
     
-    def _calculate_inflection_point(self, n_results: Dict[int, Tuple], polynomial_order: int = 5) -> int:
+    def _calculate_inflection_point(self, n_results: Dict[int, Tuple], polynomial_order: int = 3) -> int:
         """Calculate inflection point of margin curve to find optimal n"""
         
         # Extract margin data
