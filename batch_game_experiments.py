@@ -266,13 +266,16 @@ def main():
         return
     
     # Confirm experiment parameters
-    total_games = len(list(itertools.combinations(MODELS.keys(), 2))) * 20
+    num_combinations = len(list(itertools.combinations(MODELS.keys(), 2)))
+    games_per_combination = len(SEEDS) * 2  # Each seed played in both directions
+    total_games = num_combinations * games_per_combination
     estimated_time = total_games * 0.5  # Rough estimate: 30 seconds per game
     
     print(f"Experiment Parameters:")
     print(f"  Models: {len(MODELS)} ({', '.join(MODELS.keys())})")
-    print(f"  Combinations: {len(list(itertools.combinations(MODELS.keys(), 2)))}")
-    print(f"  Games per combination: 20 (10 each direction)")
+    print(f"  Combinations: {num_combinations}")
+    print(f"  Seeds: {len(SEEDS)}")
+    print(f"  Games per combination: {games_per_combination} ({len(SEEDS)} each direction)")
     print(f"  Total games: {total_games}")
     print(f"  Estimated time: {estimated_time/60:.0f} minutes")
     print()
