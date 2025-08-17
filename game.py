@@ -104,6 +104,19 @@ class AICodenamesGame:
         print(f"{ANSI_BOLD_RED}🤖 Red Player: {os.path.basename(self.red_vectorstore_path)}{ANSI_RESET}")
         print(f"{ANSI_BOLD_BLUE}🤖 Blue Player: {os.path.basename(self.blue_vectorstore_path)}{ANSI_RESET}")
         
+    def _get_visible_width(self, text: str) -> int:
+        """Get the visible width of text, excluding ANSI escape codes"""
+        import re
+        # Remove ANSI escape sequences to get actual visible length
+        ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+        return len(ansi_escape.sub('', text))
+    
+    def _pad_to_width(self, text: str, width: int) -> str:
+        """Pad text to specified width, accounting for ANSI codes"""
+        visible_width = self._get_visible_width(text)
+        padding_needed = max(0, width - visible_width)
+        return text + " " * padding_needed
+    
     def display_board(self, show_colors: bool = False) -> None:
         """Display the current game board"""
         print(f"\n{ANSI_BOLD}📋 GAME BOARD{ANSI_RESET}")
@@ -117,26 +130,27 @@ class AICodenamesGame:
                 word = self.all_words[word_idx]
                 
                 if word in self.revealed_words:
-                    # Revealed words - show with team colors
+                    # Revealed words - show with background colors and white text
                     if word in self.red_agent_words:
-                        row.append(f"{ANSI_RED}[{word.upper()}]{ANSI_RESET}")
+                        row.append(f"\033[41m\033[97m{word.upper()}\033[0m")
                     elif word in self.blue_agent_words:
-                        row.append(f"{ANSI_BLUE}[{word.upper()}]{ANSI_RESET}")
+                        row.append(f"\033[44m\033[97m{word.upper()}\033[0m")
                     else:
-                        row.append(f"{ANSI_GRAY}[{word.upper()}]{ANSI_RESET}")
+                        row.append(f"\033[47m\033[30m{word.upper()}\033[0m")
                 elif show_colors:
-                    # Show actual colors (for debugging)
+                    # Show actual colors (for debugging) - background colors with white text
                     if word in self.red_agent_words:
-                        row.append(f"{ANSI_RED}{word}{ANSI_RESET}")
+                        row.append(f"\033[41m\033[97m{word}\033[0m")
                     elif word in self.blue_agent_words:
-                        row.append(f"{ANSI_BLUE}{word}{ANSI_RESET}")
+                        row.append(f"\033[44m\033[97m{word}\033[0m")
                     else:
-                        row.append(f"{ANSI_GRAY}{word}{ANSI_RESET}")
+                        row.append(f"\033[47m\033[30m{word}\033[0m")
                 else:
                     # Hidden words
                     row.append(word)
-            
-            print(" | ".join(f"{w:12}" for w in row))
+            # Use custom padding that accounts for ANSI codes
+            padded_words = [self._pad_to_width(w, 12) for w in row]
+            print(" | ".join(padded_words))
         
         print("=" * 70)
         print(f"Red remaining: {ANSI_BOLD_RED}{self.red_remaining}{ANSI_RESET} | "
