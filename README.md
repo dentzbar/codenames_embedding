@@ -83,24 +83,24 @@ This will install all necessary dependencies including:
 
 Run the embedding generation script for all 4 supported models:
 
-#### BERT Embeddings
+#### BERT Embeddings 
 ```bash
-python data/embedd_vocab.py --model bert
+python data/embedd_vocab.py --model bert  #(~220 MB free disk)
 ```
 
-#### RoBERTa Embeddings  
+#### RoBERTa Embeddings 
 ```bash
-python data/embedd_vocab.py --model roberta
+python data/embedd_vocab.py --model roberta  #(~220 MB free disk)
 ```
 
 #### OpenAI Embeddings
 ```bash
-python data/embedd_vocab.py --model openai
+python data/embedd_vocab.py --model openai  #(~440 MB free disk)
 ```
 
-#### Gemini Embeddings
+#### Gemini Embeddings 
 ```bash
-python data/embedd_vocab.py --model gemini
+python data/embedd_vocab.py --model gemini  #(~440 MB free disk)
 ```
 
 **🔑 API Key Requirements:**
