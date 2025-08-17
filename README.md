@@ -216,15 +216,15 @@ This project explores the intersection of NLP embeddings and strategic game AI. 
 <!-- TODO: Add performance comparison plots here -->
 
 #### Win & Points Rate Analysis
-![Win & Points Rate Comparison](assets/plots/win_rate_comparison.png)
-*Comparison of win rates across all model combinations*
+![Win & Points Rate Comparison](./data/game_results_analysis_20250817_081003.png)
+*Comparison of win rates across all model combinations - 50 games (25 each side) per models combination * 6 combination = 300 games*
 
 #### Performance 'single turn' analysis (10 repeats)
-![Margin Distribution](data\plots\lineplots_summary_multi.png)
+![Margin Distribution](./data/plots/lineplots_summary_multi.png)
 *Different game metrics vs n_words per each model (10 repeats of single encoder-decoder turn)*
 
 #### Margin Score analysis - for Optimal_n Selection Patterns
-![Margin Distribution](data\best_margins_vs_num_agent_words_derivatives_ord_3.png)
+![Margin Distribution](./data/best_margins_vs_num_agent_words_derivatives_ord_3.png)
 *Distribution of margin scores achieved by each model*
 
 
