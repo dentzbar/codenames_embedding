@@ -254,7 +254,7 @@ def plot_game_results(csv_path: str, output_dir: str = None) -> None:
     win_rates = [model_wins[model] / model_games[model] * 100 if model_games[model] > 0 else 0 for model in models]
     
     # Create figure with subplots
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 8))
     
     # Subplot 1: Number of wins
     bars1 = ax1.bar(models, wins, color=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728'][:len(models)], alpha=0.7)
@@ -309,6 +309,7 @@ def plot_game_results(csv_path: str, output_dir: str = None) -> None:
         print(f"\n💾 Plot saved to: {filepath}")
     
     plt.show()
+
 
 
 def main_game_results():
