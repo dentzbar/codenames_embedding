@@ -6,6 +6,8 @@ from itertools import combinations
 import time
 
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 from utils import load_words
 
 
@@ -38,10 +40,12 @@ class SemanticCodewordAnalyzer:
         word_dataset_path: str = os.path.join("data", "simple_word_dataset.pkl"),
         vectorestore_path: str = os.path.join("data", "wordnet_bert_embedded_store.pkl"),
         seed: int | None = None,
+        show_heatmap: bool = False,
     ) -> None:
         self.word_dataset_path = word_dataset_path
         self.vectorestore_path = vectorestore_path
         self.seed = seed
+        self.show_heatmap = show_heatmap
 
         # Outputs / stats
         self.game_agents: List[str] = []
@@ -61,7 +65,7 @@ class SemanticCodewordAnalyzer:
         self.optimal_n: int = 0
 
         # confidence -> indicating what n_optimal to choose after reaching inflection point
-        self.confidence = 'top' # 'floor', 'round' 
+        self.confidence = 'top' # 'floor', 'round'
 
     def _load_vectorestore(self) -> None:
         with open(self.vectorestore_path, "rb") as f:
@@ -383,6 +387,92 @@ class SemanticCodewordAnalyzer:
 
         return self.sorted_similarities
 
+    def _generate_similarity_heatmap(self) -> None:
+        """Generate and display a heatmap of similarities between all 25 game words."""
+        if not self.show_heatmap:
+            return
+            
+        # Get all 25 board words (9 agents + 16 innocents)
+        all_board_words = self.game_agents + self.game_innocents
+        
+        # Filter to only words present in vocabulary
+        valid_words = [w for w in all_board_words if w in self.normalized_vocab]
+        
+        if len(valid_words) < 2:
+            print("⚠️  Not enough valid words for heatmap generation")
+            return
+            
+        print(f"\n🔥 Generating similarity heatmap for {len(valid_words)} words...")
+        
+        # Compute similarity matrix
+        n_words = len(valid_words)
+        similarity_matrix = np.zeros((n_words, n_words))
+        
+        for i, word1 in enumerate(valid_words):
+            for j, word2 in enumerate(valid_words):
+                similarity_matrix[i, j] = np.dot(
+                    self.normalized_vocab[word1], 
+                    self.normalized_vocab[word2]
+                )
+        
+        # Create mask for upper triangle (including diagonal)
+        mask = np.triu(np.ones_like(similarity_matrix, dtype=bool))
+        
+        # Create figure and axis
+        plt.figure(figsize=(12, 10))
+        
+        # Create labels with bold formatting for selected optimal_n words
+        labels = []
+        for word in valid_words:
+            if word in self.selected_agent_words:
+                labels.append(f"**{word}**")  # Bold for selected words
+            else:
+                labels.append(word)
+        
+        # Create heatmap using seaborn with oranges colormap, masking upper triangle
+        ax = sns.heatmap(
+            similarity_matrix,
+            mask=mask,
+            xticklabels=labels,
+            yticklabels=labels,
+            cmap='Oranges',
+            vmin=similarity_matrix.min(),
+            vmax=similarity_matrix.max(),
+            annot=True,
+            fmt='.2f',
+            square=True,
+            cbar_kws={'label': 'Cosine Similarity'}
+        )
+        
+        # Set formatting for agent words (red color) and selected words (bold)
+        x_labels = ax.get_xticklabels()
+        y_labels = ax.get_yticklabels()
+        
+        for i, (x_label, y_label) in enumerate(zip(x_labels, y_labels)):
+            word = valid_words[i]
+            
+            # Color all agent words red
+            if word in self.game_agents:
+                x_label.set_color('red')
+                y_label.set_color('red')
+                
+                # Make selected agent words bold and red
+                if word in self.selected_agent_words:
+                    x_label.set_weight('bold')
+                    y_label.set_weight('bold')
+        
+        plt.title(f'Word Similarity Heatmap (n={self.optimal_n} selected words in bold)', 
+                 fontsize=14, fontweight='bold')
+        plt.xlabel('Words', fontweight='bold')
+        plt.ylabel('Words', fontweight='bold')
+        
+        # Rotate labels for better readability
+        plt.xticks(rotation=45, ha='right')
+        plt.yticks(rotation=0)
+        
+        plt.tight_layout()
+        plt.show()
+
     def run(self) -> "SemanticCodewordAnalyzer":
         # Load vector store and board
         self._load_vectorestore()
@@ -406,10 +496,13 @@ class SemanticCodewordAnalyzer:
         # Decoder analysis
         self._decoder_analysis(best_word, agent_words + innocent_words)
 
+        # Generate heatmap if requested
+        self._generate_similarity_heatmap()
+
         return self
 
 
 if __name__ == "__main__":
     vectorestore_path=os.path.join("data", "wordnet_openai_embedded_store.pkl")
-    analyzer = SemanticCodewordAnalyzer(vectorestore_path=vectorestore_path)
+    analyzer = SemanticCodewordAnalyzer(vectorestore_path=vectorestore_path, show_heatmap=True)
     analyzer.run() 
