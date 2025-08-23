@@ -2,6 +2,7 @@
 numpy>=1.24.3
 pandas>=1.5.0
 matplotlib>=3.6.0
+seaborn>=0.12.0
 
 # NLP and text processing
 nltk>=3.8.1
