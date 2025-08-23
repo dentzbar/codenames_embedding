@@ -223,6 +223,10 @@ This project explores the intersection of NLP embeddings and strategic game AI. 
 ![Margin Distribution](./data/plots/lineplots_summary_multi.png)
 *Different game metrics vs n_words per each model (10 repeats of single encoder-decoder turn)*
 
+#### Board words - Cosine Similarity heatmap example
+![Margin Distribution](./data/similarities_heat_map_openai_example.png)
+*Example for a Cosine similarity heatmap across the board. Agent team's words are highlighted; the selected optimal n-word group is shown in bold.*
+
 #### Margin Score analysis - for Optimal_n Selection Patterns
 ![Margin Distribution](./data/best_margins_vs_num_agent_words_derivatives_ord_3.png)
 *Distribution of margin scores achieved by each model*
