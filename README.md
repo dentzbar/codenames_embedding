@@ -210,25 +210,154 @@ This project explores the intersection of NLP embeddings and strategic game AI. 
 
 ## 📊 Performance Analysis & Results
 
-### 🏆 Model Comparison Plots
+### 🏆 Overall Tournament Results
 
-<!-- TODO: Add performance comparison plots here -->
+Across 300 competitive games (50 games per model pairing), clear performance hierarchies emerged:
+
+| Model | Total Wins | Total Points | Win Rate |
+|-------|-----------|--------------|----------|
+| **OpenAI** | 117 | 1213 | **39.0%** |
+| **Gemini** | 103 | 1176 | 34.3% |
+| **BERT** | 58 | 984 | 19.3% |
+| **RoBERTa** | 22 | 758 | 7.3% |
 
 #### Win & Points Rate Analysis
 ![Win & Points Rate Comparison](./data/game_results_analysis_20250817_081003.png)
 *Comparison of win rates across all model combinations - 50 games (25 each side) per models combination * 6 combination = 300 games*
 
+---
+
+### 🔬 Single-Turn Performance Analysis
+
+To isolate pure semantic capability from multi-turn game dynamics, we evaluated each model on single-turn performance with 9 target words vs. 16 distractors (10 repetitions per group size).
+
 #### Performance 'single turn' analysis (10 repeats)
 ![Margin Distribution](./data/plots/lineplots_summary_multi.png)
 *Different game metrics vs n_words per each model (10 repeats of single encoder-decoder turn)*
+
+#### Key Findings:
+
+**🥇 OpenAI: The Aggressive Leader**
+- Maintains **highest positive margins** even at large group sizes (n=7-9)
+- Shows **larger intra-group variance**, indicating stronger semantic separation
+- Strategy: Confident with ambitious clues, enabling faster victories
+- Trade-off: Occasionally takes calculated risks that pay off
+
+**🥈 Gemini: The Safe Strategist**
+- Produces **tightly clustered target groups** (lowest intra-group variance)
+- Generally safe but tends to choose **smaller n** values
+- Strategy: Conservative approach prioritizing accuracy over speed
+- Trade-off: Extends game length but maintains consistency
+
+**🥉 BERT: The Balanced Performer**
+- Forms **coherent semantic clusters** with moderate performance
+- Occasionally **over-extends** target count (optimistic n selection)
+- Strategy: Balanced between ambition and safety
+- Trade-off: Can finish quickly but risks hitting neutral words
+
+**⚠️ RoBERTa: The Struggling Challenger**
+- Suffers from **near-uniform cosine scores** (~0.999 for many word pairs)
+- **Collapsed margin discrimination** in our WordNet vocabulary setup
+- Strategy: Unable to reliably differentiate semantic relationships
+- Issue: Degenerate similarity patterns lead to brittle performance
+
+---
+
+### 📉 Margin Score & Optimal-n Selection Patterns
+
+For each group size n, we computed the best achievable margin score across all word combinations, then applied 3rd-order polynomial fitting to identify optimal target counts.
+
+#### Margin Score analysis - for Optimal_n Selection Patterns
+![Margin Distribution](./data/best_margins_vs_num_agent_words_derivatives_ord_3.png)
+*Distribution of margin scores achieved by each model. OpenAI maintains high margins at larger n, while others peak earlier and decline sharply.*
+
+#### Strategic Insights:
+
+- **OpenAI**: Margins remain positive up to n=7-8, enabling aggressive multi-word strategies
+- **Gemini**: Sharp margin decline after n=4-5, explaining conservative target selection
+- **BERT**: Moderate margin degradation, inflection point around n=5-6
+- **RoBERTa**: Extremely compressed margin ranges, making optimal-n selection unreliable
+
+---
+
+### 🎯 Semantic Geometry Analysis
 
 #### Board words - Cosine Similarity heatmap example
 ![Margin Distribution](./data/similarities_heat_map_openai_example.png)
 *Example for a Cosine similarity heatmap across the board. Agent team's words are highlighted; the selected optimal n-word group is shown in bold.*
 
-#### Margin Score analysis - for Optimal_n Selection Patterns
-![Margin Distribution](./data/best_margins_vs_num_agent_words_derivatives_ord_3.png)
-*Distribution of margin scores achieved by each model*
+The similarity heatmaps reveal fundamental differences in embedding space geometry:
+
+**Embedding Space Characteristics:**
+
+1. **Cluster Compactness** (How tightly target words group together)
+   - **Gemini**: Highest compactness → Safe, conservative play
+   - **OpenAI**: Moderate compactness with strong separation → Balanced aggression
+   - **BERT**: Variable compactness → Inconsistent strategy
+   - **RoBERTa**: Collapsed structure → Poor discrimination
+
+2. **Semantic Separation** (Distance from opponent/neutral words)
+   - **OpenAI**: Best separation maintenance at scale → Enables larger n
+   - **Gemini**: Strong separation but requires smaller groups
+   - **BERT**: Adequate separation for moderate n
+   - **RoBERTa**: Insufficient separation → Frequent errors
+
+---
+
+### 🎲 Cross-Matchup Head-to-Head Analysis
+
+#### Model Pairing Insights:
+
+**OpenAI vs Gemini** (Most competitive matchup)
+- OpenAI wins through faster completion (aggressive n selection)
+- Gemini remains close through accuracy (conservative safety-first approach)
+- Demonstrates classic **speed vs. accuracy trade-off**
+
+**BERT vs OpenAI** (Qualitative example from paper)
+- BERT attempted 7-word clue with negative margin → Immediate neutral hit ("happiness")
+- OpenAI proposed 6-word high-margin clue → Clean success
+- Illustrates importance of **positive margin buffers** even with ambitious strategies
+
+**RoBERTa vs All** (Systematic failure mode)
+- Near-uniform similarities collapse the margin score's discriminative power
+- Frequent ties and decoding errors
+- Highlights vulnerability to **vocabulary-specific embedding degeneracy**
+
+---
+
+### 🧪 The Coverage-Safety Trade-off
+
+The Codenames game environment reveals a fundamental tension in semantic embeddings:
+
+**Coverage (Higher n)**: More ambitious clues targeting many words
+- ✅ Faster game completion
+- ✅ Demonstrates semantic generalization capability
+- ❌ Increased risk of hitting opponent/neutral words
+
+**Safety (Positive Margin)**: Conservative clues with clear semantic separation
+- ✅ Fewer mistakes
+- ✅ More predictable performance
+- ❌ Slower game progression
+
+**Model Strategies:**
+- **OpenAI**: Optimally balances both dimensions
+- **Gemini**: Heavily favors safety
+- **BERT**: Leans toward coverage, sometimes excessively
+- **RoBERTa**: Unable to navigate trade-off due to margin collapse
+
+---
+
+### 💡 Key Takeaways
+
+1. **Embedding Quality ≠ Dimensionality**: Despite identical dimensions (1536), OpenAI and Gemini exhibit vastly different semantic geometries and strategic profiles
+
+2. **Geometry Matters**: Raw similarity scores are insufficient—the shape of the embedding space (cluster compactness vs. separation) directly determines strategic capability
+
+3. **Game-Based Evaluation Reveals Nuances**: Traditional similarity benchmarks miss multi-constraint decision quality that games like Codenames expose
+
+4. **Failure Modes Are Informative**: RoBERTa's collapse illustrates how embedding degeneracy can occur with specific vocabularies, a failure mode invisible to standard benchmarks
+
+5. **Strategy Emerges from Structure**: Each model's optimal playstyle (aggressive vs. conservative) is a direct consequence of its embedding space geometry, not arbitrary hyperparameters
 
 
 
