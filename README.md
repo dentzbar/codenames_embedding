@@ -2,8 +2,7 @@
 
 *Four embedding models walk into a word game... only the smartest one walks out victorious!*
 
-<!-- TODO: Add project banner/logo image here -->
-![Project Banner](./assets/agent_AI_image.jpg)
+<img src="./assets/codenames_agents.png" alt="Codenames AI Banner" width="600"/>
 
 ---
 
