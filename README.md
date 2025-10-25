@@ -1,4 +1,4 @@
-# Embedded Spy Masters
+# Embedded "CodeNames" Spy Masters
 
 *Four embedding models walk into a word game... only the smartest one walks out victorious!*
 
