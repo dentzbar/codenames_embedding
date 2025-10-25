@@ -67,7 +67,7 @@ Follow these 3 simple steps to get the semantic Codenames game running:
 ### Step 1: 📦 Install Requirements
 
 ```bash
-pip install -r requirement.txt
+pip install -r requirements.txt
 ```
 
 This will install all necessary dependencies including:
@@ -197,7 +197,7 @@ codenames_embedding/
 ├── semantic_codeword_analyzer.py  # Core semantic analysis
 ├── batch_game_experiments.py      # Systematic experiments
 ├── plot_experiments.py            # Results visualization
-└── requirement.txt               # Dependencies
+└── requirements.txt               # Dependencies
 ```
 
 ---
